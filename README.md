@@ -4,6 +4,8 @@ docker django nginx redis mysql
 
 使用：
   docker-compose build
+  
+  
   docker-compose up -d
   
  结果：
