@@ -1,0 +1,55 @@
+version: '3'
+services:
+  mysql:
+    build: ./mysql
+    restart: always
+    expose:
+      - "3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=testproject
+      - MYSQL_USER=testaccount
+      - MYSQL_PASSWORD=easypassword
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    - ./nginx/conf:/etc/nginx/conf.d
+    - ./TestProject/static:/static
+    - ./TestProject/media:/media
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6380:6379"
+    restart: always
+
+  web:
+    build: ./TestProject
+    command: uwsgi --ini uwsgi.ini
+    working_dir: /code/web
+    volumes:
+      - .:/code
+    expose:
+      - "8000"
+    depends_on:
+      - mysql
+      - redis
+
+
+  celery:
+    build:  ./TestProject
+    command: celery -A TestProject worker -l info
+    working_dir: /code/web
+    volumes:
+      - .:/code
+    depends_on:
+      - mysql
+      - redis
+
+
