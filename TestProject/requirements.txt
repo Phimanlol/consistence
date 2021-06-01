@@ -34,7 +34,7 @@ redis==2.10.6
 requests==2.19.1
 six==1.11.0
 uritemplate==3.0.0
-urllib3==1.23
+urllib3==1.26.5
 uwsgi
 vine==1.1.4
 XlsxWriter==1.1.1
